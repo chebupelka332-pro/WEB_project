@@ -1,10 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Главная страница</h1>
-{% for item in news%}
-<div class="col-md6 border rounded">
-    <a>Тестовый текст</a>
-</div>
-{% endfor %}
+    <div class="card text-dark bg-light rounded-0 border-0 h-auto p-5">
+        <div class="row g-0">
+        <div class="col-md-12">
+            <div class="card-body">
+            <h5 class="card-title h3">О сайте</h5>
+            <p class="card-text">На данном сайте вы можете записаться в салоны красоты, парикмахерские и т.д.</p>
+            <p class="card-text">Если вы являетесь администратором, то выможете внести свой салон в базу и ваши улиенты смогут записываться к вам с данного сайта</p>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="card text-light bg-dark rounded-0 border-0 h-auto text-right p-5">
+        <div class="row g-0">
+        <div class="col-md-12">
+            <div class="card-body">
+            <h5 class="card-title h3">Как это работает</h5>
+            <p class="card-text">Для клиента: для записи в салон вам следует перейти по данной <a href="#">ссылке</a>, выбрать салон, мастера и время, а также ввести своё имя, номер телефона и адрес электорнной почты. На почту вам придёт письмо со всей инфорацией.</p>
+            <p class="card-text">Для администратора: вам следует зарегестрироваться как администратор, после вам нужно будет внести данные мастеров. Как только вы это сделаете ваши слиенты смогут записываться к вам, а у вас будет отображаться вся информация.</p>
+            </div>
+        </div>
+        </div>
+    </div>
 {% endblock %}
