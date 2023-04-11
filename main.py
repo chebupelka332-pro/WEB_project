@@ -7,7 +7,6 @@ from data.admin import Admin
 from data.master import Master
 from data.process import Process
 from data.record import Record
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask import Flask, render_template
 from data import db_session
@@ -31,28 +30,28 @@ class RegisterForm(FlaskForm):
     login = EmailField('Почта', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
-    phone_number = TelField('Номер телофона организации', validators=[DataRequired()])
+    phone_number = TelField('Номер телефона организации', validators=[DataRequired()])
     info = TextAreaField("Немного о себе")
-    submit = SubmitField('Войти')
+    submit = SubmitField('Зарегистрироваться')
 
 
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
-    return db_sess.query().get(user_id)
-
-
-def set_password(self, password):
-    self.hashed_password = generate_password_hash(password)
-
-
-def check_password(self, password):
-    return check_password_hash(self.hashed_password, password)
+    return db_sess.get(Admin, int(user_id))
 
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():  # Позже переделаю
-    pass
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        user = db_sess.query(Admin).filter(Admin.login == form.login.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect("/")
+        return render_template('login.html', message="Неправильный логин или пароль", form=form)
+    return render_template('login.html', title='Авторизация', form=form)
 
 
 @app.route('/logout')
@@ -63,13 +62,32 @@ def logout():
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def reqister():  # Позже переделаю
-    pass
+def reqister():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        if form.password.data != form.password_again.data:
+            return render_template('register.html', title='Регистрация', form=form,
+                                   message="Пароли не совпадают")
+        db_sess = db_session.create_session()
+        if db_sess.query(Admin).filter(Admin.login == form.login.data).first():
+            return render_template('register.html', title='Регистрация', form=form,
+                                   message="Такой пользователь уже есть")
+        user = Admin(
+            name=form.name.data,
+            login=form.login.data,
+            info=form.info.data,
+            number=form.phone_number.data
+        )
+        user.set_password(form.password.data)
+        db_sess.add(user)
+        db_sess.commit()
+        return redirect('/login')
+    return render_template('register.html', title='Регистрация', form=form)
 
 
 @app.route("/")
-def index():  # Позже переделаю
-    return "Hello, World!"
+def index():
+    return render_template("index.html")
 
 
 def main():
