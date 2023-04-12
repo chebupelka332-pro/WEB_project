@@ -12,7 +12,7 @@ class Admin(SqlAlchemyBase, UserMixin):
     login = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     number = sqlalchemy.Column(sqlalchemy.String, nullable=False)
-    info = sqlalchemy.Column(sqlalchemy.String, nullable=False)
+    info = sqlalchemy.Column(sqlalchemy.Text, nullable=False)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

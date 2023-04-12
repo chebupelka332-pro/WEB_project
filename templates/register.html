@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="card w-50 mx-auto mt-5 p-5 mb-5">    
 <h1>Регистрация</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
@@ -51,7 +52,7 @@
     </p>
     <p>
         {{ form.info.label }}<br>
-        {{ form.info(class="form-control") }}<br>
+        {{ form.info(class="form-control", style="resize: none; height:150px") }}<br>
         {% for error in form.info.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
@@ -61,4 +62,5 @@
     {{message}}
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
 </form>
+</div>
 {% endblock %}

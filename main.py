@@ -72,6 +72,7 @@ def reqister():
         if db_sess.query(Admin).filter(Admin.login == form.login.data).first():
             return render_template('register.html', title='Регистрация', form=form,
                                    message="Такой пользователь уже есть")
+        
         user = Admin(
             name=form.name.data,
             login=form.login.data,

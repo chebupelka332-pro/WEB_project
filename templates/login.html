@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="card w-50 mx-auto mt-5 p-5  mb-5">
     <h1>Авторизация</h1>
     <form action="" method="post">
         {{ form.hidden_tag() }}
@@ -26,4 +27,5 @@
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
         <div>{{ message }}</div>
     </form>
+</div>
 {% endblock %}
