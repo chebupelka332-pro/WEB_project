@@ -91,6 +91,26 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/profile")
+def timeline():  # Вкладка на которой можно поменять основные данные
+    pass
+
+
+@app.route("/profile/timeline")
+def timeline():  # Заготовка для таймлайна
+    pass
+
+
+@app.route("/profile/masters")
+def masters():  # Заготовка для вкладки мастеров
+    pass
+
+
+@app.route("/profile/process")
+def process():   # Заготовка для вкладки услуг
+    pass
+
+
 def main():
     db_session.global_init("db/base.db")
     app.run()
