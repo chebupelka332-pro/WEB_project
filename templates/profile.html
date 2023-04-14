@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <h2>{{ name }}</h2>
+    логин - {{ login }}
+    <br>номер телефона - {{ number }}
+    <br>информация - {{ info }}
+    <br><a href="/change_profile">Редактировать профиль</a>
+    <br><a href="/logout">Выход</a>
+</div>
+{% endblock %}

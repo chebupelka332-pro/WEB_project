@@ -35,6 +35,16 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Зарегистрироваться')
 
 
+class ChangeProfileForm(FlaskForm):  # Форма для изменения профиля по ссылке /change_profile
+    name = StringField('Новое название организации', validators=[DataRequired()])
+    login = EmailField('Новая почта', validators=[DataRequired()])
+    old_password = PasswordField('Старый пароль', validators=[DataRequired()])
+    new_password = PasswordField('Новый пароль', validators=[DataRequired()])
+    new_password_again = PasswordField('Повторите новый пароль', validators=[DataRequired()])
+    phone_number = TelField('Номер телефона организации', validators=[DataRequired()])
+    info = TextAreaField("Информация о месте")
+    submit = SubmitField('Изменить')
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
@@ -49,7 +59,7 @@ def login():
         user = db_sess.query(Admin).filter(Admin.login == form.login.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect("/")
+            return redirect("/profile")
         return render_template('login.html', message="Неправильный логин или пароль", form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
@@ -86,29 +96,36 @@ def reqister():
     return render_template('register.html', title='Регистрация', form=form)
 
 
+@app.route('/change_profile', methods=['GET', 'POST'])
+def change_profile():
+    return 'Здесь должна быть страница редатирования профиля'
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
 @app.route("/profile")
-def timeline():  # Вкладка на которой можно поменять основные данные
-    pass
+@login_required
+def profile():
+    return render_template('profile.html', name=current_user.name, login=current_user.login,
+                           number=current_user.number, info=current_user.info)
 
 
 @app.route("/profile/timeline")
 def timeline():  # Заготовка для таймлайна
-    pass
+    return 'Здесь должен быть таймлайн'
 
 
 @app.route("/profile/masters")
 def masters():  # Заготовка для вкладки мастеров
-    pass
+    return 'Здесь должна быть вкалдка с мастерами'
 
 
 @app.route("/profile/process")
 def process():   # Заготовка для вкладки услуг
-    pass
+    return 'Здесь должна быть вкалдка с услугами'
 
 
 def main():
