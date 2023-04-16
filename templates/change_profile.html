@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<<div class="card mx-auto p-5 my-5" style="min-width:500px; max-width:75%">
+<h1>Изменение профиля</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.name.label }}<br>
+        {{ form.name(class="form-control") }}<br>
+        {% for error in form.name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.login.label }}<br>
+        {{ form.login(class="form-control", type="email") }}<br>
+        {% for error in form.login.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.old_password.label }}<br>
+        {{ form.old_password(class="form-control", type="password") }}<br>
+        {% for error in form.old_password.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.new_password.label }}<br>
+        {{ form.new_password(class="form-control", type="password") }}<br>
+        {% for error in form.new_password.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.new_password_again.label }}<br>
+        {{ form.new_password_again(class="form-control", type="password") }}<br>
+        {% for error in form.new_password_again.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.phone_number.label }}<br>
+        {{ form.phone_number(class="form-control") }}<br>
+        {% for error in form.phone_number.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.info.label }}<br>
+        {{ form.info(class="form-control", style="resize: none; height:150px") }}<br>
+        {% for error in form.info.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    {{message}}
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+</form>
+</div>
+{% endblock %}

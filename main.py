@@ -7,6 +7,7 @@ from data.admin import Admin
 from data.master import Master
 from data.process import Process
 from data.record import Record
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask import Flask, render_template
 from data import db_session
@@ -42,8 +43,9 @@ class ChangeProfileForm(FlaskForm):  # Форма для изменения пр
     new_password = PasswordField('Новый пароль', validators=[DataRequired()])
     new_password_again = PasswordField('Повторите новый пароль', validators=[DataRequired()])
     phone_number = TelField('Номер телефона организации', validators=[DataRequired()])
-    info = TextAreaField("Информация о месте")
+    info = TextAreaField("Информация о заведении")
     submit = SubmitField('Изменить')
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -97,8 +99,30 @@ def reqister():
 
 
 @app.route('/change_profile', methods=['GET', 'POST'])
+@login_required
 def change_profile():
-    return 'Здесь должна быть страница редатирования профиля'
+    form = ChangeProfileForm()
+    if form.validate_on_submit():
+        if not current_user.check_password(form.old_password.data):
+            return render_template('change_profile.html', title='Изменение профиля', form=form,
+                                   message="Пароль не верный")
+        if form.new_password.data != form.new_password_again.data:
+            return render_template('change_profile.html', title='Изменение профиля', form=form,
+                                   message="Пароли не совпадают")
+        db_sess = db_session.create_session()
+        if form.login.data in [elem.login for elem in db_sess.query(Admin).filter(Admin.id != current_user.id).all()]:
+            return render_template('change_profile.html', title='Изменение профиля', form=form,
+                                   message="Пользователь с таким логином уже есть")
+
+        current_user.name = form.name.data
+        current_user.login = form.login.data
+        current_user.number = form.phone_number.data
+        current_user.info = form.info.data
+        current_user.set_password(form.new_password.data)
+        db_sess.merge(current_user)
+        db_sess.commit()
+        return redirect('/profile')
+    return render_template('change_profile.html', title='Изменение профиля', form=form)
 
 
 @app.route("/")
