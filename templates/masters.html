@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="/profile">Профиль</a>
+<a href="/profile/masters">Мастера</a>
+<a href="/profile/timeline">Таймлайн</a>
+<a href="/profile/process">Услуги</a>
+<h1>Мастера</h1>
+{% for item in masters_data%}
+<div class="col-md6 border rounded">
+    <h2>{{item.name}}</h2>
+    <div>
+        <br>Время начало рабочего дня - {{item.start_work_time}}
+        <br>Время конца рабочего дня - {{item.end_work_time}}
+        <br>Рабочие дни - {{item.work_days}}
+    </div>
+    <br>
+</div>
+{% endfor %}
+<br><a href="/profile/change_masters">Редактировать профиль мастера</a>
+<br><a href="/profile/add_masters">Добавить нового мастера</a>
+{% endblock %}

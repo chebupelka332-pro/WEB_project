@@ -1,6 +1,7 @@
 from flask import Flask, render_template, make_response, request, session, redirect
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, BooleanField, SubmitField, StringField, EmailField, TextAreaField, TelField
+from wtforms import PasswordField, BooleanField, SubmitField, StringField, EmailField, TextAreaField, TelField, \
+    TimeField
 from wtforms.validators import DataRequired
 from data import db_session
 from data.admin import Admin
@@ -11,6 +12,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask import Flask, render_template
 from data import db_session
+import datetime
 
 
 app = Flask(__name__)
@@ -45,6 +47,14 @@ class ChangeProfileForm(FlaskForm):  # Форма для изменения пр
     phone_number = TelField('Номер телефона организации', validators=[DataRequired()])
     info = TextAreaField("Информация о заведении")
     submit = SubmitField('Изменить')
+
+
+class AddMasterForm(FlaskForm):
+    name = StringField('Имя мастера', validators=[DataRequired()])
+    start_work_time = TimeField('Время начала работы мастера', validators=[DataRequired()])
+    end_work_time = TimeField('Время конца работы мастера', validators=[DataRequired()])
+    work_days = TextAreaField("Рабочие дни (пока кастыль и выбор через запятую 1,2,3,4", validators=[DataRequired()])
+    submit = SubmitField('Добавить')
 
 
 @login_manager.user_loader
@@ -98,7 +108,19 @@ def reqister():
     return render_template('register.html', title='Регистрация', form=form)
 
 
-@app.route('/change_profile', methods=['GET', 'POST'])
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/profile")
+@login_required
+def profile():
+    return render_template('profile.html', name=current_user.name, login=current_user.login,
+                           number=current_user.number, info=current_user.info)
+
+
+@app.route('/profile/change_profile', methods=['GET', 'POST'])
 @login_required
 def change_profile():
     form = ChangeProfileForm()
@@ -125,26 +147,44 @@ def change_profile():
     return render_template('change_profile.html', title='Изменение профиля', form=form)
 
 
-@app.route("/")
-def index():
-    return render_template("index.html")
-
-
-@app.route("/profile")
-@login_required
-def profile():
-    return render_template('profile.html', name=current_user.name, login=current_user.login,
-                           number=current_user.number, info=current_user.info)
-
-
 @app.route("/profile/timeline")
+@login_required
 def timeline():  # Заготовка для таймлайна
     return 'Здесь должен быть таймлайн'
 
 
 @app.route("/profile/masters")
+@login_required
 def masters():  # Заготовка для вкладки мастеров
-    return 'Здесь должна быть вкалдка с мастерами'
+    db_sess = db_session.create_session()
+    data = db_sess.query(Master).filter(Master.admin_id == current_user.id)
+    return render_template('masters.html', masters_data=data)
+
+
+@app.route('/profile/add_masters', methods=['GET', 'POST'])
+@login_required
+def add_masters():
+    form = AddMasterForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+
+        master = Master(
+            name=form.name.data,
+            admin_id=current_user.id,
+            start_work_time=form.start_work_time.data.strftime('%H:%M'),
+            end_work_time=form.end_work_time.data.strftime('%H:%M'),
+            work_days=form.work_days.data
+        )
+        db_sess.add(master)
+        db_sess.commit()
+        return redirect('/profile/masters')
+    return render_template('add_masters.html', title='Добавление мастера', form=form)
+
+
+@app.route('/profile/change_masters', methods=['GET', 'POST'])
+@login_required
+def change_masters():
+    return 'Здесь должна быть вкалдка с редактированием мастеров'
 
 
 @app.route("/profile/process")
