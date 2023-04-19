@@ -17,6 +17,7 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+            {% if not current_user.is_authenticated %}
             <ul class="navbar-nav">
               <li class="nav-item mr-3">
                 <a class="nav-link active text-center" href="/login">Вход</a>
@@ -25,6 +26,28 @@
                 <a class="nav-link active border rounded text-center" href="/register">Регистрация</a>
               </li>
             </ul>
+            {% else %}
+            <ul class="navbar-nav"> 
+              <li class="nav-item mr-3">
+                <a class="nav-link active text-center" href="/profile">Профиль</a>
+              </li>
+              <li class="nav-item mr-3">
+                <a class="nav-link active text-center" href="/profile/masters">Мастера</a>
+              </li>
+              <li class="nav-item mr-3">
+                <a class="nav-link active text-center" href="/profile/timeline">Таймлайн</a>
+              </li>
+              <li class="nav-item mr-3">
+                <a class="nav-link active text-center" href="/profile/process">Услуги</a>
+              </li>
+              <li class="nav-item mr-3">
+                <a class="nav-link active text-center" href="/profile/change_profile">Редактировать профиль</a>
+              </li>
+              <li class="nav-item mr-3">
+                <a class="nav-link active text-center border rounded" href="/logout">Выход</a>
+              </li>
+            </ul>
+            {% endif %}
           </div>
         </div>
       </nav>
