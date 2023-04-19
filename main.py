@@ -1,17 +1,11 @@
 from flask import Flask, render_template, make_response, request, session, redirect
-from flask_wtf import FlaskForm
-from wtforms import PasswordField, BooleanField, SubmitField, StringField, EmailField, TextAreaField, TelField, \
-    TimeField
-from wtforms.validators import DataRequired
-from data import db_session
 from data.admin import Admin
 from data.master import Master
 from data.process import Process
 from data.record import Record
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from flask import Flask, render_template
 from data import db_session
+from forms import *
 import datetime
 
 
@@ -19,42 +13,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-
-class LoginForm(FlaskForm):
-    login = EmailField('Почта', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    remember_me = BooleanField('Запомнить меня')
-    submit = SubmitField('Войти')
-
-
-class RegisterForm(FlaskForm):
-    name = StringField('Название организации', validators=[DataRequired()])
-    login = EmailField('Почта', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
-    phone_number = TelField('Номер телефона организации', validators=[DataRequired()])
-    info = TextAreaField("Немного о себе")
-    submit = SubmitField('Зарегистрироваться')
-
-
-class ChangeProfileForm(FlaskForm):  # Форма для изменения профиля по ссылке /change_profile
-    name = StringField('Новое название организации', validators=[DataRequired()])
-    login = EmailField('Новая почта', validators=[DataRequired()])
-    old_password = PasswordField('Старый пароль', validators=[DataRequired()])
-    new_password = PasswordField('Новый пароль', validators=[DataRequired()])
-    new_password_again = PasswordField('Повторите новый пароль', validators=[DataRequired()])
-    phone_number = TelField('Номер телефона организации', validators=[DataRequired()])
-    info = TextAreaField("Информация о заведении")
-    submit = SubmitField('Изменить')
-
-
-class AddMasterForm(FlaskForm):
-    name = StringField('Имя мастера', validators=[DataRequired()])
-    start_work_time = TimeField('Время начала работы мастера', validators=[DataRequired()])
-    end_work_time = TimeField('Время конца работы мастера', validators=[DataRequired()])
-    work_days = TextAreaField("Рабочие дни (пока кастыль и выбор через запятую 1,2,3,4", validators=[DataRequired()])
-    submit = SubmitField('Добавить')
 
 
 @login_manager.user_loader
@@ -117,7 +75,7 @@ def index():
 @login_required
 def profile():
     return render_template('profile.html', name=current_user.name, login=current_user.login,
-                           number=current_user.number, info=current_user.info)
+                           number=current_user.number, info=current_user.info, id=current_user.id)
 
 
 @app.route('/profile/change_profile', methods=['GET', 'POST'])
@@ -155,7 +113,7 @@ def timeline():  # Заготовка для таймлайна
 
 @app.route("/profile/masters")
 @login_required
-def masters():  # Заготовка для вкладки мастеров
+def masters():
     db_sess = db_session.create_session()
     data = db_sess.query(Master).filter(Master.admin_id == current_user.id)
     return render_template('masters.html', masters_data=data)
@@ -181,15 +139,40 @@ def add_masters():
     return render_template('add_masters.html', title='Добавление мастера', form=form)
 
 
-@app.route('/profile/change_masters', methods=['GET', 'POST'])
+@app.route('/profile/change_masters/<id>', methods=['GET', 'POST'])
 @login_required
-def change_masters():
-    return 'Здесь должна быть вкалдка с редактированием мастеров'
+def change_masters(id):
+    form = ChangeMasterForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        master = db_sess.query(Master).filter(Master.id == id).first()
+        master.name = form.name.data
+        master.start_work_time = form.start_work_time.data.strftime('%H:%M')
+        master.end_work_time = form.end_work_time.data.strftime('%H:%M')
+        master.work_days = form.work_days.data
+        db_sess.merge(master)
+        db_sess.commit()
+        return redirect('/profile/masters')
+    return render_template('change_masters.html', title='Изменение мастера', form=form)
+
+
+@app.route('/profile/delete_masters/<id>', methods=['GET', 'POST'])
+@login_required
+def delete_masters(id):
+    db_sess = db_session.create_session()
+    db_sess.query(Master).filter(Master.id == id).delete()
+    db_sess.commit()
+    return redirect('/profile/masters')
 
 
 @app.route("/profile/process")
 def process():   # Заготовка для вкладки услуг
     return 'Здесь должна быть вкалдка с услугами'
+
+
+@app.route('/record/<admin_id>')
+def record(admin_id):  # Заготовка для записи
+    return 'Здесь должна быть страницы для записи клиента на услугу'
 
 
 def main():

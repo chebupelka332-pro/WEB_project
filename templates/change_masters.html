@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card mx-auto p-5 my-5" style="min-width:500px; max-width:75%">
+<h1>Изменение мастера</h1>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.name.label }}<br>
+        {{ form.name(class="form-control") }}<br>
+        {% for error in form.name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.start_work_time.label }}<br>
+        {{ form.start_work_time(class="form-control") }}<br>
+        {% for error in form.start_work_time.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.end_work_time.label }}<br>
+        {{ form.end_work_time(class="form-control") }}<br>
+        {% for error in form.end_work_time.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.work_days.label }}<br>
+        {{ form.work_days(class="form-control") }}<br>
+        {% for error in form.work_days.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    {{message}}
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+</form>
+</div>
+{% endblock %}

@@ -14,8 +14,8 @@
                     <p class="card-text">Время начало рабочего дня - {{item.start_work_time}}</p>
                     <p class="card-text">Время конца рабочего дня - {{item.end_work_time}}</p>
                     <p class="card-text">Рабочие дни - {{item.work_days}}</p>
-                    <a class="card-link" href="/profile/change_masters">Редактировать профиль мастера</a>
-                    
+                    <a class="card-link" href="/profile/change_masters/{{item.id}}">Редактировать профиль мастера</a>
+                    <a class="card-link" href="/profile/delete_masters/{{item.id}}">Удалить профиль мастера</a>
                 </div>
             </div>
         </div>

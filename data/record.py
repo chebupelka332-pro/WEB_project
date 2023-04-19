@@ -13,4 +13,5 @@ class Record(SqlAlchemyBase):
     admin_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("admins.id"))
     process_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("processes.id"))
     start_time = sqlalchemy.Column(sqlalchemy.String, nullable=False)  # Format "09:00"
+    data = sqlalchemy.Column(sqlalchemy.String, nullable=False)  # Format "%D-%M-%Y"
     admin = orm.relationship('Admin')
