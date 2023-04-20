@@ -46,3 +46,17 @@ class ChangeMasterForm(FlaskForm):
     end_work_time = TimeField('Время конца работы мастера', validators=[DataRequired()])
     work_days = TextAreaField("Рабочие дни (пока кастыль и выбор через запятую 1,2,3,4", validators=[DataRequired()])
     submit = SubmitField('Изменить')
+
+
+class AddProcessForm(FlaskForm):
+    name = StringField('Название услуги', validators=[DataRequired()])
+    duration = TimeField('Продолжительность услуги', validators=[DataRequired()])
+    info = TextAreaField("Информация об услуге")
+    submit = SubmitField('Добавить')
+
+
+class ChangeProcessForm(FlaskForm):
+    name = StringField('Название услуги', validators=[DataRequired()])
+    duration = TimeField('Продолжительность услуги', validators=[DataRequired()])
+    info = TextAreaField("Информация об услуге")
+    submit = SubmitField('Изменить')

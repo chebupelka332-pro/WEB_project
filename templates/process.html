@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+    <h1>Услуги</h1>
+</div>
+<div class="card-group ">
+    <div class="mx-auto row row-cols-sm-1 row-cols-md-3">
+    {% for item in processes_data%}
+        <div class="col mx-auto" style="max-width: 350px; min-width: 300px;">
+            <div class="card border mr-2 my-3">
+                <div class="card-body">
+                    <h4 class="card-title">{{item.name}}</h4>
+                    <p class="card-text">Продолжительность - {{item.duration}}</p>
+                    <p class="card-text">Время конца рабочего дня - {{item.end_work_time}}</p>
+                    <p class="card-text">Сведения - {{item.info}}</p>
+                    <a class="card-link" href="/profile/change_process/{{item.id}}">Редактировать услугу</a>
+                    <a class="card-link" href="/profile/delete_process/{{item.id}}">Удалить услугу</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="col mx-auto" style="max-width: 350px; min-width: 300px;">
+            <div class="card border mr-2 my-3">
+                <div class="card-img text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-person-plus mx-auto" viewBox="0 0 16 16">
+                        <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
+                        <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+                    </svg>
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">Добавить</h4>
+                    <a class="card-link" href="/profile/add_process">Добавить услугу</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

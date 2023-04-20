@@ -166,11 +166,55 @@ def delete_masters(id):
 
 
 @app.route("/profile/process")
-def process():   # Заготовка для вкладки услуг
-    return 'Здесь должна быть вкалдка с услугами'
+def process():
+    db_sess = db_session.create_session()
+    data = db_sess.query(Process).filter(Process.admin_id == current_user.id)
+    return render_template('process.html', processes_data=data)
 
 
-@app.route('/record/<admin_id>')
+@app.route("/profile/add_process", methods=['GET', 'POST'])
+def add_process():
+    form = AddProcessForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+
+        process = Process(
+            name=form.name.data,
+            admin_id=current_user.id,
+            duration=form.duration.data.strftime('%H:%M'),
+            info=form.info.data
+        )
+        db_sess.add(process)
+        db_sess.commit()
+        return redirect('/profile/process')
+    return render_template('add_process.html', title='Добавление услуг', form=form)
+
+
+@app.route("/profile/change_process/<id>", methods=['GET', 'POST'])
+def change_process(id):
+    form = ChangeProcessForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        process = db_sess.query(Process).filter(Process.id == id).first()
+        process.name = form.name.data
+        process.duration = form.duration.data.strftime('%H:%M')
+        process.info = form.info.data
+        db_sess.merge(process)
+        db_sess.commit()
+        return redirect('/profile/process')
+    return render_template('change_process.html', title='Изменение услуги', form=form)
+
+
+@app.route('/profile/delete_process/<id>', methods=['GET', 'POST'])
+@login_required
+def delete_process(id):
+    db_sess = db_session.create_session()
+    db_sess.query(Process).filter(Process.id == id).delete()
+    db_sess.commit()
+    return redirect('/profile/process')
+
+
+@app.route('/record/<admin_id>', methods=['GET', 'POST'])
 def record(admin_id):  # Заготовка для записи
     return 'Здесь должна быть страницы для записи клиента на услугу'
 
