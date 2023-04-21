@@ -124,18 +124,23 @@ def masters():
 def add_masters():
     form = AddMasterForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
+        if (form.start_work_time.data.minute == 30 or form.start_work_time.data.minute == 0) and \
+                (form.end_work_time.data.minute == 30 or form.end_work_time.data.minute == 0):
+            db_sess = db_session.create_session()
 
-        master = Master(
-            name=form.name.data,
-            admin_id=current_user.id,
-            start_work_time=form.start_work_time.data.strftime('%H:%M'),
-            end_work_time=form.end_work_time.data.strftime('%H:%M'),
-            work_days=form.work_days.data
-        )
-        db_sess.add(master)
-        db_sess.commit()
-        return redirect('/profile/masters')
+            master = Master(
+                name=form.name.data,
+                admin_id=current_user.id,
+                start_work_time=form.start_work_time.data.strftime('%H:%M'),
+                end_work_time=form.end_work_time.data.strftime('%H:%M'),
+                work_days=','.join(form.work_days.data)
+            )
+            db_sess.add(master)
+            db_sess.commit()
+            return redirect('/profile/masters')
+        else:
+            return render_template('add_masters.html', title='Добавление мастера', form=form,
+                                   message="Время работы нужно выбирать с интервалом в 30 мин")
     return render_template('add_masters.html', title='Добавление мастера', form=form)
 
 
@@ -144,15 +149,20 @@ def add_masters():
 def change_masters(id):
     form = ChangeMasterForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        master = db_sess.query(Master).filter(Master.id == id).first()
-        master.name = form.name.data
-        master.start_work_time = form.start_work_time.data.strftime('%H:%M')
-        master.end_work_time = form.end_work_time.data.strftime('%H:%M')
-        master.work_days = form.work_days.data
-        db_sess.merge(master)
-        db_sess.commit()
-        return redirect('/profile/masters')
+        if (form.start_work_time.data.minute == 30 or form.start_work_time.data.minute == 0) and \
+                (form.end_work_time.data.minute == 30 or form.end_work_time.data.minute == 0):
+            db_sess = db_session.create_session()
+            master = db_sess.query(Master).filter(Master.id == id).first()
+            master.name = form.name.data
+            master.start_work_time = form.start_work_time.data.strftime('%H:%M')
+            master.end_work_time = form.end_work_time.data.strftime('%H:%M')
+            master.work_days = ','.join(form.work_days.data)
+            db_sess.merge(master)
+            db_sess.commit()
+            return redirect('/profile/masters')
+        else:
+            return render_template('change_masters.html', title='Изменение мастера', form=form,
+                                   message="Время работы нужно выбирать с интервалом в 30 мин")
     return render_template('change_masters.html', title='Изменение мастера', form=form)
 
 
@@ -176,17 +186,22 @@ def process():
 def add_process():
     form = AddProcessForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
+        print(form.duration.data.minute)
+        if form.duration.data.minute == 30 or form.duration.data.minute == 0:
+            db_sess = db_session.create_session()
 
-        process = Process(
-            name=form.name.data,
-            admin_id=current_user.id,
-            duration=form.duration.data.strftime('%H:%M'),
-            info=form.info.data
-        )
-        db_sess.add(process)
-        db_sess.commit()
-        return redirect('/profile/process')
+            process = Process(
+                name=form.name.data,
+                admin_id=current_user.id,
+                duration=form.duration.data.strftime('%H:%M'),
+                info=form.info.data
+            )
+            db_sess.add(process)
+            db_sess.commit()
+            return redirect('/profile/process')
+        else:
+            return render_template('add_process.html', title='Добавление услуги', form=form,
+                                   message="Продолжительность нужно выбирать с интервалом в 30 мин")
     return render_template('add_process.html', title='Добавление услуг', form=form)
 
 
@@ -194,14 +209,18 @@ def add_process():
 def change_process(id):
     form = ChangeProcessForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        process = db_sess.query(Process).filter(Process.id == id).first()
-        process.name = form.name.data
-        process.duration = form.duration.data.strftime('%H:%M')
-        process.info = form.info.data
-        db_sess.merge(process)
-        db_sess.commit()
-        return redirect('/profile/process')
+        if form.duration.data.minute != 30 or form.duration.data.minute != 0:
+            db_sess = db_session.create_session()
+            process = db_sess.query(Process).filter(Process.id == id).first()
+            process.name = form.name.data
+            process.duration = form.duration.data.strftime('%H:%M')
+            process.info = form.info.data
+            db_sess.merge(process)
+            db_sess.commit()
+            return redirect('/profile/process')
+        else:
+            return render_template('change_process.html', title='Изменение услуги', form=form,
+                                   message="Продолжительность нужно выбирать с интервалом в 30 мин")
     return render_template('change_process.html', title='Изменение услуги', form=form)
 
 
@@ -215,8 +234,12 @@ def delete_process(id):
 
 
 @app.route('/record/<admin_id>', methods=['GET', 'POST'])
-def record(admin_id):  # Заготовка для записи
-    return 'Здесь должна быть страницы для записи клиента на услугу'
+def record(admin_id):  # Пока не робит из-за SelectField
+    db_sess = db_session.create_session()
+    form = RegisterCLientForm()
+    form.process.choices = [(process.id, process.name)
+                            for process in db_sess.query(Process).filter(Process.id == admin_id).all()]
+    return render_template('register_client.html', title='Запись на услугу', form=form)
 
 
 def main():
