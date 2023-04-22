@@ -5,6 +5,7 @@
 <h1>Изменение профиля</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
+    <small class="d-inline-flex mb-3 px-2 py-1 fw-semibold text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-2">{{message}}</small>
     <p>
         {{ form.name.label }}<br>
         {{ form.name(class="form-control") }}<br>
@@ -68,7 +69,6 @@
             </p>
         {% endfor %}
     </p>
-    {{message}}
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
 </form>
 </div>

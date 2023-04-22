@@ -108,7 +108,7 @@ def change_profile():
 @app.route("/profile/timeline")
 @login_required
 def timeline():  # Заготовка для таймлайна
-    return 'Здесь должен быть таймлайн'
+    return render_template('timeline.html', title="Таймлайн")
 
 
 @app.route("/profile/masters")
@@ -245,8 +245,6 @@ def record(admin_id):  # Пока не доделано
         form.process_name.choices = process_data
     if master_data:
         form.master_name.choices = master_data
-
-    form.date.data = datetime.datetime.now()
 
     if form.validate_on_submit():
         user_process = form.process_name.data

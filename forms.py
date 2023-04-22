@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import PasswordField, BooleanField, SubmitField, StringField, EmailField, TextAreaField, TelField, \
     TimeField, SelectField, DateField, SelectMultipleField
 from wtforms.validators import DataRequired
-
+import datetime
 
 class LoginForm(FlaskForm):
     login = EmailField('Почта', validators=[DataRequired()])
@@ -79,7 +79,7 @@ class ChangeProcessForm(FlaskForm):
 class ClientForm(FlaskForm):
     name = StringField('Ваше имя', validators=[DataRequired()])
     phone_number = TelField('Номер телефона для связи', validators=[DataRequired()])
-    date = DateField('Дата записи', validators=[DataRequired()])
+    date = DateField('Дата записи', default=datetime.date.today, validators=[DataRequired()])
     process_name = SelectField('Выберете услугу', choices=['Пока нет никаких усглуг'], validators=[DataRequired()])
     master_name = SelectField('Выберете мастера', choices=['Пока нет мастеров'], validators=[DataRequired()])
     start_time = TimeField('Время записи', validators=[DataRequired()])
