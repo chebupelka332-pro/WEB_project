@@ -36,7 +36,7 @@ class AddMasterForm(FlaskForm):
     name = StringField('Имя мастера', validators=[DataRequired()])
     start_work_time = TimeField('Время начала работы мастера (по пол часа)', validators=[DataRequired()])
     end_work_time = TimeField('Время конца работы мастера (по пол часа)', validators=[DataRequired()])
-    work_days = SelectMultipleField("Рабочие дни (пока кастыль и выбор через запятую 1,2,3,4", choices=[
+    work_days = SelectMultipleField("Рабочие дни", choices=[
         ('1', 'Понедельник',),
         ('2', 'Вторник'),
         ('3', 'Среда'),
@@ -51,7 +51,7 @@ class ChangeMasterForm(FlaskForm):
     name = StringField('Имя мастера', validators=[DataRequired()])
     start_work_time = TimeField('Время начала работы мастера (по пол часа)', validators=[DataRequired()])
     end_work_time = TimeField('Время конца работы мастера (по пол часа)', validators=[DataRequired()])
-    work_days = SelectMultipleField("Рабочие дни (пока кастыль и выбор через запятую 1,2,3,4", choices=[
+    work_days = SelectMultipleField("Рабочие дни", choices=[
         ('1', 'Понедельник',),
         ('2', 'Вторник'),
         ('3', 'Среда'),
@@ -76,11 +76,11 @@ class ChangeProcessForm(FlaskForm):
     submit = SubmitField('Изменить')
 
 
-class RegisterCLientForm(FlaskForm):
-    choices = [('1', '1'), ('2', '2'), ('3', '3')]
+class ClientForm(FlaskForm):
     name = StringField('Ваше имя', validators=[DataRequired()])
     phone_number = TelField('Номер телефона для связи', validators=[DataRequired()])
-    process = SelectField('Выберете услугу', choices=[])
     date = DateField('Дата записи', validators=[DataRequired()])
+    process_name = SelectField('Выберете услугу', choices=['Пока нет никаких усглуг'], validators=[DataRequired()])
+    master_name = SelectField('Выберете мастера', choices=['Пока нет мастеров'], validators=[DataRequired()])
     start_time = TimeField('Время записи', validators=[DataRequired()])
     submit = SubmitField('Записаться')

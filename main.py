@@ -1,13 +1,13 @@
-from flask import Flask, render_template, make_response, request, session, redirect
+import datetime
+
+from flask import Flask, render_template, redirect
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+
+from data import db_session
 from data.admin import Admin
 from data.master import Master
 from data.process import Process
-from data.record import Record
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from data import db_session
 from forms import *
-import datetime
-
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -52,7 +52,7 @@ def reqister():
         if db_sess.query(Admin).filter(Admin.login == form.login.data).first():
             return render_template('register.html', title='Регистрация', form=form,
                                    message="Такой пользователь уже есть")
-        
+
         user = Admin(
             name=form.name.data,
             login=form.login.data,
@@ -233,13 +233,38 @@ def delete_process(id):
     return redirect('/profile/process')
 
 
-@app.route('/record/<admin_id>', methods=['GET', 'POST'])
-def record(admin_id):  # Пока не робит из-за SelectField
+@app.route("/record/<admin_id>", methods=['GET', 'POST'])
+def record(admin_id):  # Пока не доделано
     db_sess = db_session.create_session()
-    form = RegisterCLientForm()
-    form.process.choices = [(process.id, process.name)
-                            for process in db_sess.query(Process).filter(Process.id == admin_id).all()]
-    return render_template('register_client.html', title='Запись на услугу', form=form)
+    form = ClientForm()
+    process_data = [(process_name.id, process_name.name)
+                    for process_name in db_sess.query(Process).filter(Process.id == admin_id).all()]
+    master_data = [(master_name.id, master_name.name)
+                   for master_name in db_sess.query(Master).filter(Master.id == admin_id).all()]
+    if process_data:
+        form.process_name.choices = process_data
+    if master_data:
+        form.master_name.choices = master_data
+
+    form.date.data = datetime.datetime.now()
+
+    if form.validate_on_submit():
+        user_process = form.process_name.data
+        user_master = form.master_name.data
+        user_date = form.date.data
+        if user_date.isoweekday() not in [int(x) for x in
+                                          db_sess.query(Master).filter(
+                                              Master.id == user_master).first().work_days.split(',')]:
+            return render_template('register_client.html', title='Запись', form=form, message='Данный мастер не '
+                                                                                              'работает в выбранный '
+                                                                                              'вами день')
+        return redirect('/good')
+    return render_template('register_client.html', title='Запись', form=form)
+
+
+@app.route("/good")
+def good():
+    return 'Запись прошла успешно'
 
 
 def main():

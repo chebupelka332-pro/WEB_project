@@ -1,6 +1,14 @@
-{% extends "base.html" %}
-
-{% block content %}
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{{title}}</title>
+</head>
+<body>
 <<div class="card mx-auto p-5 my-5" style="min-width:500px; max-width:75%">
 <h1>Запись на услугу</h1>
 <form action="" method="post">
@@ -15,9 +23,9 @@
         {% endfor %}
     </p>
     <p>
-        {{ form.process.label }}<br>
-        {{ form.process }}<br>
-        {% for error in form.process.errors %}
+        {{ form.phone_number.label }}<br>
+        {{ form.phone_number(class="form-control") }}<br>
+        {% for error in form.phone_number.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
@@ -25,7 +33,7 @@
     </p>
     <p>
         {{ form.date.label }}<br>
-        {{ form.date(class="form-control", type="password") }}<br>
+        {{ form.date(class="form-control", type="date") }}<br>
         {% for error in form.date.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
@@ -33,8 +41,26 @@
         {% endfor %}
     </p>
     <p>
+        {{ form.process_name.label }}<br>
+        {{ form.process_name(class="form-control") }}<br>
+        {% for error in form.process_name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.master_name.label }}<br>
+        {{ form.master_name(class="form-control") }}<br>
+        {% for error in form.master_name.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+    <p>
         {{ form.start_time.label }}<br>
-        {{ form.start_time(class="form-control", type="password") }}<br>
+        {{ form.start_time(class="form-control", type="time") }}<br>
         {% for error in form.start_time.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
@@ -45,4 +71,5 @@
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
 </form>
 </div>
-{% endblock %}
+</body>
+</html>

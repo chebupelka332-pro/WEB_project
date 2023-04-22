@@ -12,5 +12,5 @@ class Master(SqlAlchemyBase):
     start_work_time = sqlalchemy.Column(sqlalchemy.String, nullable=False)  # Format "09:00-21:00"
     end_work_time = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     work_days = sqlalchemy.Column(sqlalchemy.String, nullable=False)  # Format "1,2,3,4,5,6,7" рабочие дни
-    # сотрудника через запятую (пока кастыль)
+    # сотрудника через запятую
     admin = orm.relationship('Admin')
