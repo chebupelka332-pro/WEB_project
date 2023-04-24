@@ -1,4 +1,5 @@
 import datetime
+import random
 
 from flask import Flask, render_template, redirect
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -105,11 +106,31 @@ def change_profile():
         return redirect('/profile')
     return render_template('change_profile.html', title='Изменение профиля', form=form)
 
+@app.route("/profile/timeline/")
+def tl():
+    return redirect("/profile/timeline/0")
 
-@app.route("/profile/timeline")
+@app.route("/profile/timeline/<delta_day>/")
 @login_required
-def timeline():
-    return render_template('timeline.html', title="Таймлайн")
+def timeline(delta_day):
+    db_sess = db_session.create_session()
+    date = datetime.date.today() + datetime.timedelta(days=int(delta_day))
+    day = date.day
+    month = date.strftime('%b')
+    durations = {}
+    colors = {}
+    records = db_sess.query(Record).filter(Record.admin_id == current_user.id, Record.date == date.strftime('%d.%m.%Y'))
+    for record in records:
+        duration = db_sess.query(Process).filter(Process.id == record.process_id).first().duration    
+        record.process_id = db_sess.query(Process).filter(Process.id == record.process_id).first().name
+        hour, minute = list(map(int, record.start_time.split(':'))) 
+        record.start_time = hour + minute / 60
+        duration_hour, duration_minute = list(map(int, duration.split(':'))) 
+        durations[record.id] = duration_hour + duration_minute / 2
+        colors[record.id] = random.choice(['#A9F874', '#EBF874', '#74F881', '#74F8C3' '#74EBF8'])
+    return render_template('timeline.html', title="Таймлайн", day=day,
+                            month=month, records=records, colors=colors, durations=durations, delta_day=int(delta_day))
+
 
 
 @app.route("/profile/masters")

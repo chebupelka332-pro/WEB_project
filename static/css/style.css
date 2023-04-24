@@ -1,7 +1,7 @@
 :root{  
-  --numDays: 3;
+  --numDays: 1;
   --numHours: 48;
-  --timeHeight: 60px;
+  --timeHeight: 150px;
 }
 
 .calendar {

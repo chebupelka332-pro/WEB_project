@@ -3,28 +3,32 @@
 {% block content %}
 
 <div class="calendar d-grid m-2 gap-1">
-  <div class="timeline d-grid">
-    <div style="height: 60px;"></div>
-    {% for i in range(46)%}
-        <div class="time-marker">{{i / 2 + 1}}</div>
+  <div class="timeline d-grid" style="margin-top: 60px;" >
+    {% for i in range(48)%}
+        <div class="time-marker">{{i / 2}}</div>
     {%endfor%}
   </div>
   <div class="days d-grid gap-1" style="--bs-rows: 48">
-    {% for i in range(3)%}
       <div class="day">
         <div class="date d-flex gap-1" style="height: 60px;">
-          <p class="date-num d-inline fs-3" style="font-weight: 600;">{{i + 1}}</p>
-          <p class="date-day d-inline fs-3" style="font-weight: 100;"></p>
+          <p class="date-num d-inline fs-3" style="font-weight: 600;">{{day}}</p>
+          <p class="date-month d-inline fs-3" style="font-weight: 100;">{{month}}</p>
         </div>
         <div class="events d-grid rounded-1" style="background-color: #f8c374; ">
-          <div class="event border-1 rounded-1 p-1 my-1 ", style="background: #ffe6c0; border-color: #ad6800; grid-row-start: {{(i + 1) * (i + 1)}}; grid-row-end: {{(i + 1) * (i + 1) + 2}};">
-            <p class="title mb-1" style="font-weight: 600;">Securities Regulation</p>
-            <p class="time">2 PM - 5 PM</p>
-          </div>
+          {%for i in records%}
+            <div class="event border-1 rounded-1 p-1 my-1" style="background: {{colors[i.id]}}88; border-color: #ad6800; grid-row-start: {{(i.start_time * 2)|int + 1}}; grid-row-end: {{(i.start_time * 2 + durations[i.id]*2)|int + 1}};">
+              <p class="title mb-1" style="font-weight: 600;">{{i.name}}</p>
+              <p class="process">{{i.process_id}}</p>
+              <p class="number">{{i.number}}</p>
+              <p class="time">{{i.start_time}}</p>
+            </div>
+          {%endfor%}
         </div>
       </div>
-    {%endfor%}  
   </div>
-</div>  
-
+</div>
+<div class="d-flex my-2">  
+  <a href="/profile/timeline/{{delta_day - 1}}" class="mx-2 btn btn-info">Предыдущий день</a> 
+  <a href="/profile/timeline/{{delta_day + 1}}" class="btn btn-info">Следующий день</a> 
+</div>
 {% endblock %}
