@@ -7,6 +7,7 @@ from data import db_session
 from data.admin import Admin
 from data.master import Master
 from data.process import Process
+from data.record import Record
 from forms import *
 
 app = Flask(__name__)
@@ -107,7 +108,7 @@ def change_profile():
 
 @app.route("/profile/timeline")
 @login_required
-def timeline():  # Заготовка для таймлайна
+def timeline():
     return render_template('timeline.html', title="Таймлайн")
 
 
@@ -256,6 +257,17 @@ def record(admin_id):  # Пока не доделано
             return render_template('register_client.html', title='Запись', form=form, message='Данный мастер не '
                                                                                               'работает в выбранный '
                                                                                               'вами день')
+
+        record =  Record(
+                name=form.name.data,
+                number=form.phone_number.data,
+                admin_id=int(admin_id),
+                master_id=int(form.master_name.data),
+                process_id = int(user_process),
+                start_time=form.start_time.data.strftime("%H:%M"),
+                date=form.date.data.strftime('%d.%m.%Y'))
+        db_sess.add(record)
+        db_sess.commit()
         return redirect('/good')
     return render_template('register_client.html', title='Запись', form=form)
 

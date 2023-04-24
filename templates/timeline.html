@@ -2,83 +2,29 @@
 
 {% block content %}
 
-<div class="calendar">
-  <div class="timeline">
-    <div class="spacer"></div>
-    {% for i in range(23)%}
-        <div class="time-marker">{{i + 1}}</div>
+<div class="calendar d-grid m-2 gap-1">
+  <div class="timeline d-grid">
+    <div style="height: 60px;"></div>
+    {% for i in range(46)%}
+        <div class="time-marker">{{i / 2 + 1}}</div>
     {%endfor%}
   </div>
-  <div class="days">
-    <div class="day mon">
-      <div class="date">
-        <p class="date-num">9</p>
-        <p class="date-day">Mon</p>
-      </div>
-      <div class="events">
-        <div class="event start-2 end-5 securities">
-          <p class="title">Securities Regulation</p>
-          <p class="time">2 PM - 5 PM</p>
+  <div class="days d-grid gap-1" style="--bs-rows: 48">
+    {% for i in range(3)%}
+      <div class="day">
+        <div class="date d-flex gap-1" style="height: 60px;">
+          <p class="date-num d-inline fs-3" style="font-weight: 600;">{{i + 1}}</p>
+          <p class="date-day d-inline fs-3" style="font-weight: 100;"></p>
+        </div>
+        <div class="events d-grid rounded-1" style="background-color: #f8c374; ">
+          <div class="event border-1 rounded-1 p-1 my-1 ", style="background: #ffe6c0; border-color: #ad6800; grid-row-start: {{(i + 1) * (i + 1)}}; grid-row-end: {{(i + 1) * (i + 1) + 2}};">
+            <p class="title mb-1" style="font-weight: 600;">Securities Regulation</p>
+            <p class="time">2 PM - 5 PM</p>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="day tues">
-      <div class="date">
-        <p class="date-num">12</p>
-        <p class="date-day">Tues</p>
-      </div>
-      <div class="events">
-        <div class="event start-10 end-12 corp-fi">
-          <p class="title">Corporate Finance</p>
-          <p class="time">10 AM - 12 PM</p>
-        </div>
-        <div class="event start-1 end-4 ent-law">
-          <p class="title">Entertainment Law</p>
-          <p class="time">1PM - 4PM</p>
-        </div>
-      </div>
-    </div>
-    <div class="day wed">
-      <div class="date">
-        <p class="date-num">11</p>
-        <p class="date-day">Wed</p>
-      </div>
-      <div class="events">
-        <div class="event start-12 end-1 writing">
-          <p class="title">Writing Seminar</p>
-          <p class="time">11 AM - 12 PM</p>
-        </div>
-        <div class="event start-2 end-5 securities">
-          <p class="title">Securities Regulation</p>
-          <p class="time">2 PM - 5 PM</p>
-        </div>
-      </div>
-    </div>
-    <div class="day thurs">
-      <div class="date">
-        <p class="date-num">12</p>
-        <p class="date-day">Thurs</p>
-      </div>
-      <div class="events">
-        <div class="event start-10 end-12 corp-fi">
-          <p class="title">Corporate Finance</p>
-          <p class="time">10 AM - 12 PM</p>
-        </div>
-        <div class="event start-1 end-4 ent-law">
-          <p class="title">Entertainment Law</p>
-          <p class="time">1PM - 4PM</p>
-        </div>
-      </div>
-    </div>
-    <div class="day fri">
-      <div class="date">
-        <p class="date-num">13</p>
-        <p class="date-day">Fri</p>
-      </div>
-      <div class="events">
-      </div>
-    </div>
+    {%endfor%}  
   </div>
-</div>
+</div>  
 
 {% endblock %}

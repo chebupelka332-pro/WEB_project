@@ -1,4 +1,27 @@
-*{
-    margin: 0;
-    padding:0;
+:root{  
+  --numDays: 3;
+  --numHours: 48;
+  --timeHeight: 60px;
 }
+
+.calendar {
+ 
+  grid-template-columns: auto 1fr;
+
+}
+
+.timeline {
+  grid-template-rows: repeat(var(--numHours), var(--timeHeight));
+}
+
+.days {
+  grid-column: 2;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.events {
+  grid-template-rows: repeat(var(--numHours), var(--timeHeight));
+}
+
+
+
