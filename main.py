@@ -1,9 +1,6 @@
-import datetime
 import random
-
 from flask import Flask, render_template, redirect
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-
 from data import db_session
 from data.admin import Admin
 from data.master import Master
@@ -76,7 +73,7 @@ def index():
 @app.route("/profile")
 @login_required
 def profile():
-    return render_template('profile.html', title='Профиль',name=current_user.name, login=current_user.login,
+    return render_template('profile.html', title='Профиль', name=current_user.name, login=current_user.login,
                            number=current_user.number, info=current_user.info, id=current_user.id)
 
 
@@ -106,9 +103,11 @@ def change_profile():
         return redirect('/profile')
     return render_template('change_profile.html', title='Изменение профиля', form=form)
 
+
 @app.route("/profile/timeline/")
 def tl():
     return redirect("/profile/timeline/0")
+
 
 @app.route("/profile/timeline/<delta_day>/")
 @login_required
@@ -121,16 +120,15 @@ def timeline(delta_day):
     colors = {}
     records = db_sess.query(Record).filter(Record.admin_id == current_user.id, Record.date == date.strftime('%d.%m.%Y'))
     for record in records:
-        duration = db_sess.query(Process).filter(Process.id == record.process_id).first().duration    
+        duration = db_sess.query(Process).filter(Process.id == record.process_id).first().duration
         record.process_id = db_sess.query(Process).filter(Process.id == record.process_id).first().name
-        hour, minute = list(map(int, record.start_time.split(':'))) 
+        hour, minute = list(map(int, record.start_time.split(':')))
         record.start_time = hour + minute / 60
-        duration_hour, duration_minute = list(map(int, duration.split(':'))) 
+        duration_hour, duration_minute = list(map(int, duration.split(':')))
         durations[record.id] = duration_hour + duration_minute / 2
         colors[record.id] = random.choice(['#A9F874', '#EBF874', '#74F881', '#74F8C3' '#74EBF8'])
     return render_template('timeline.html', title="Таймлайн", day=day,
-                            month=month, records=records, colors=colors, durations=durations, delta_day=int(delta_day))
-
+                           month=month, records=records, colors=colors, durations=durations, delta_day=int(delta_day))
 
 
 @app.route("/profile/masters")
@@ -138,7 +136,7 @@ def timeline(delta_day):
 def masters():
     db_sess = db_session.create_session()
     data = db_sess.query(Master).filter(Master.admin_id == current_user.id)
-    return render_template('masters.html', title="Мастера",masters_data=data)
+    return render_template('masters.html', title="Мастера", masters_data=data)
 
 
 @app.route('/profile/add_masters', methods=['GET', 'POST'])
@@ -201,7 +199,7 @@ def delete_masters(id):
 def process():
     db_sess = db_session.create_session()
     data = db_sess.query(Process).filter(Process.admin_id == current_user.id)
-    return render_template('process.html', title='Услуги',processes_data=data)
+    return render_template('process.html', title='Услуги', processes_data=data)
 
 
 @app.route("/profile/add_process", methods=['GET', 'POST'])
@@ -279,14 +277,14 @@ def record(admin_id):  # Пока не доделано
                                                                                               'работает в выбранный '
                                                                                               'вами день')
 
-        record =  Record(
-                name=form.name.data,
-                number=form.phone_number.data,
-                admin_id=int(admin_id),
-                master_id=int(form.master_name.data),
-                process_id = int(user_process),
-                start_time=form.start_time.data.strftime("%H:%M"),
-                date=form.date.data.strftime('%d.%m.%Y'))
+        record = Record(
+            name=form.name.data,
+            number=form.phone_number.data,
+            admin_id=int(admin_id),
+            master_id=int(form.master_name.data),
+            process_id=int(user_process),
+            start_time=form.start_time.data.strftime("%H:%M"),
+            date=form.date.data.strftime('%d.%m.%Y'))
         db_sess.add(record)
         db_sess.commit()
         return redirect('/good')
