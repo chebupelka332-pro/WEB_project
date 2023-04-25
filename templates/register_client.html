@@ -11,7 +11,9 @@
 <h1>Запись на услугу</h1>
 <form action="" method="post">
     {{ form.hidden_tag() }}
-    <small class="d-inline-flex mb-3 px-2 py-1 fw-semibold text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-2">{{message}}</small>
+    {%if message%}
+        <small class="d-inline-flex mb-3 px-2 py-1 fw-semibold text-warning-emphasis bg-warning-subtle border border-warning-subtle rounded-2">{{message}}</small>
+    {%endif%}
     <p>
         {{ form.name.label }}
         {{ form.name(class="form-control") }}

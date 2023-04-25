@@ -32,7 +32,7 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect("/profile")
-        return render_template('login.html', message="Неправильный логин или пароль", form=form)
+        return render_template('login.html', title='Авторизация', message="Неправильный логин или пароль", form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
 
@@ -70,13 +70,13 @@ def reqister():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", title='Главная')
 
 
 @app.route("/profile")
 @login_required
 def profile():
-    return render_template('profile.html', name=current_user.name, login=current_user.login,
+    return render_template('profile.html', title='Профиль',name=current_user.name, login=current_user.login,
                            number=current_user.number, info=current_user.info, id=current_user.id)
 
 
@@ -138,7 +138,7 @@ def timeline(delta_day):
 def masters():
     db_sess = db_session.create_session()
     data = db_sess.query(Master).filter(Master.admin_id == current_user.id)
-    return render_template('masters.html', masters_data=data)
+    return render_template('masters.html', title="Мастера",masters_data=data)
 
 
 @app.route('/profile/add_masters', methods=['GET', 'POST'])
@@ -201,7 +201,7 @@ def delete_masters(id):
 def process():
     db_sess = db_session.create_session()
     data = db_sess.query(Process).filter(Process.admin_id == current_user.id)
-    return render_template('process.html', processes_data=data)
+    return render_template('process.html', title='Услуги',processes_data=data)
 
 
 @app.route("/profile/add_process", methods=['GET', 'POST'])
